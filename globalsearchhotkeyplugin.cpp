@@ -67,6 +67,7 @@ void GlobalHotkeySearchboxPlugin::slotTrigged() {
     m_mainWindow->toolBar("quickSearchBar")->show();
     KLineEdit *lineEdit = m_mainWindow->toolBar("quickSearchBar")->findChild<KLineEdit*>();
     lineEdit->setFocus();
+    lineEdit->selectAll();
 }
 
 void GlobalHotkeySearchboxPlugin::readyForUnload()
