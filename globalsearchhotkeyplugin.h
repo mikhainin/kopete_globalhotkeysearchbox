@@ -4,7 +4,7 @@
 
 class KAction;
 class KXmlGuiWindow;
-
+class KLineEdit;
 class GlobalHotkeySearchboxPlugin : public Kopete::Plugin {
     Q_OBJECT
 public:
@@ -15,8 +15,10 @@ public:
 protected slots:
     void readyForUnload();
     void slotTrigged();
+    void slotSearchReturnPressed();
 
 private:
     KAction *m_actionShowMainWindowAndSelectSearchBox;
     KXmlGuiWindow *m_mainWindow;
+    KLineEdit *m_searchBoxEdit;
 };
