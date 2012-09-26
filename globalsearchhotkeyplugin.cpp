@@ -60,51 +60,6 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
         m_mainWindow->actionCollection()->addAction("OpenChatWithContact" + QString::number(i), a );
 
     }
-/*
-    m_selectResult2 = new KAction( i18n ( "Open chat with contact #2" ), this );
-
-
-    m_selectResult2->setEnabled(true);
-    m_selectResult2->setShortcutConfigurable(true);
-    m_selectResult2->setShortcut( KShortcut(Qt::Key_2 + Qt::ALT) );
-    connect(m_selectResult2, SIGNAL(triggered()), this, SLOT(slotSelectResult2()));
-    m_selectResult2->setWhatsThis ( i18n ( "Open chat with contact #2" ) );
-
-
-
-    m_selectResult3 = new KAction( i18n ( "Open chat with contact #3" ), this );
-
-    m_mainWindow->actionCollection()->addAction("OpenChatWithContact3", m_selectResult3 );
-
-    m_selectResult3->setEnabled(true);
-    m_selectResult3->setShortcutConfigurable(true);
-    m_selectResult3->setShortcut( KShortcut(Qt::Key_3 + Qt::ALT) );
-    connect(m_selectResult3, SIGNAL(triggered()), this, SLOT(slotSelectResult3()));
-    m_selectResult3->setWhatsThis ( i18n ( "Open chat with contact #3" ) );
-
-
-
-    m_selectResult4 = new KAction( i18n ( "Open chat with contact #4" ), this );
-
-    m_mainWindow->actionCollection()->addAction("OpenChatWithContact4", m_selectResult4 );
-
-    m_selectResult4->setEnabled(true);
-    m_selectResult4->setShortcutConfigurable(true);
-    m_selectResult4->setShortcut( KShortcut(Qt::Key_4 + Qt::ALT) );
-    connect(m_selectResult4, SIGNAL(triggered()), this, SLOT(slotSelectResult4()));
-    m_selectResult4->setWhatsThis ( i18n ( "Open chat with contact #4" ) );
-
-
-    m_selectResult5 = new KAction( i18n ( "Open chat with contact #5" ), this );
-
-    m_mainWindow->actionCollection()->addAction("OpenChatWithContact5", m_selectResult5 );
-
-    m_selectResult5->setEnabled(true);
-    m_selectResult5->setShortcutConfigurable(true);
-    m_selectResult5->setShortcut( KShortcut(Qt::Key_5 + Qt::ALT) );
-    connect(m_selectResult5, SIGNAL(triggered()), this, SLOT(slotSelectResult5()));
-    m_selectResult5->setWhatsThis ( i18n ( "Open chat with contact #5" ) );
-*/
 }
 
 GlobalHotkeySearchboxPlugin::~GlobalHotkeySearchboxPlugin()
@@ -194,34 +149,6 @@ void GlobalHotkeySearchboxPlugin::selectResult(int n) {
 
     tree->setFocus();
 
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult1() {
-    selectResult(1);
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult2() {
-    selectResult(2);
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult3() {
-    selectResult(3);
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult4() {
-    selectResult(4);
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult5() {
-    selectResult(5);
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult6() {
-    selectResult(6);
-}
-
-void GlobalHotkeySearchboxPlugin::slotSelectResult7() {
-    selectResult(7);
 }
 
 #include "globalsearchhotkeyplugin.moc"
