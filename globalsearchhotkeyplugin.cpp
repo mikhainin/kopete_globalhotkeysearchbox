@@ -47,6 +47,52 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
 
     connect( m_searchBoxEdit, SIGNAL(returnPressed()), this, SLOT(slotSearchReturnPressed()) );
 
+
+    m_selectResult2 = new KAction( i18n ( "Open chat with contact #2" ), this );
+
+    m_mainWindow->actionCollection()->addAction("OpenChatWithContact2", m_selectResult2 );
+
+    m_selectResult2->setEnabled(true);
+    m_selectResult2->setShortcutConfigurable(true);
+    m_selectResult2->setShortcut( KShortcut(Qt::Key_2 + Qt::ALT) );
+    connect(m_selectResult2, SIGNAL(triggered()), this, SLOT(slotSelectResult2()));
+    m_selectResult2->setWhatsThis ( i18n ( "Open chat with contact #2" ) );
+
+
+
+    m_selectResult3 = new KAction( i18n ( "Open chat with contact #3" ), this );
+
+    m_mainWindow->actionCollection()->addAction("OpenChatWithContact3", m_selectResult3 );
+
+    m_selectResult3->setEnabled(true);
+    m_selectResult3->setShortcutConfigurable(true);
+    m_selectResult3->setShortcut( KShortcut(Qt::Key_3 + Qt::ALT) );
+    connect(m_selectResult3, SIGNAL(triggered()), this, SLOT(slotSelectResult3()));
+    m_selectResult3->setWhatsThis ( i18n ( "Open chat with contact #3" ) );
+
+
+
+    m_selectResult4 = new KAction( i18n ( "Open chat with contact #4" ), this );
+
+    m_mainWindow->actionCollection()->addAction("OpenChatWithContact4", m_selectResult4 );
+
+    m_selectResult4->setEnabled(true);
+    m_selectResult4->setShortcutConfigurable(true);
+    m_selectResult4->setShortcut( KShortcut(Qt::Key_4 + Qt::ALT) );
+    connect(m_selectResult4, SIGNAL(triggered()), this, SLOT(slotSelectResult4()));
+    m_selectResult4->setWhatsThis ( i18n ( "Open chat with contact #4" ) );
+
+
+    m_selectResult5 = new KAction( i18n ( "Open chat with contact #5" ), this );
+
+    m_mainWindow->actionCollection()->addAction("OpenChatWithContact5", m_selectResult5 );
+
+    m_selectResult5->setEnabled(true);
+    m_selectResult5->setShortcutConfigurable(true);
+    m_selectResult5->setShortcut( KShortcut(Qt::Key_5 + Qt::ALT) );
+    connect(m_selectResult5, SIGNAL(triggered()), this, SLOT(slotSelectResult5()));
+    m_selectResult5->setWhatsThis ( i18n ( "Open chat with contact #5" ) );
+
 }
 
 GlobalHotkeySearchboxPlugin::~GlobalHotkeySearchboxPlugin()
@@ -75,45 +121,90 @@ void GlobalHotkeySearchboxPlugin::readyForUnload()
     m_actionShowMainWindowAndSelectSearchBox->deleteLater();
     m_actionShowMainWindowAndSelectSearchBox = 0;
 }
-/*
-QModelIndex getIndexToSelect( QItemSelectionModel &model, QModelIndex root, int i ) {
 
-    QModelIndex result = root.child(0, 0);
-    if ( ! model.children().empty() ) {
-
-    }
-
-}
-*/
 void GlobalHotkeySearchboxPlugin::slotSearchReturnPressed() {
-    //
+    selectResult(1);
+}
+
+
+void GlobalHotkeySearchboxPlugin::selectResult(int n) {
+
     Kopete::ContactList *list = Kopete::ContactList::self();
     QTreeView *tree = m_mainWindow->findChild<QTreeView*>();
-
-    QList< Kopete::MetaContact * > metas = list->metaContacts();
-    if (metas.size() == 0 ) {
-        return;
-    }
 
     QItemSelectionModel *OldSelectionModel = tree->selectionModel();
 
     QModelIndex root = tree->rootIndex();
 
-    OldSelectionModel->select( root.child(0,0), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    int currentRootItem = 0;
+    QModelIndex currentChild;
+    while(n > 0) {
 
-    if ( list->selectedMetaContacts().size() == 0 ) {
-        OldSelectionModel->select( root.child(0,0).child(0,0), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+        currentChild = root.child(currentRootItem++,0);
+
+        if (! currentChild.isValid() ) {
+            return;
+        }
+
+        OldSelectionModel->select( currentChild, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+
+        if ( list->selectedMetaContacts().size() == 0 ) {
+
+            int currentSubIndex = 0;
+            while(n > 0) {
+
+                if ( ! currentChild.child(currentSubIndex, 0).isValid() ) {
+                    break;
+                }
+
+                OldSelectionModel->select( currentChild.child(currentSubIndex++, 0),
+                                           QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+
+                --n;
+
+            }
+        } else {
+            --n;
+        }
+
     }
+
 
     if ( list->selectedMetaContacts().size() == 0 ) {
         return;
     }
-
     list->selectedMetaContacts()[0]->startChat();
 
     tree->setFocus();
 
+}
 
+void GlobalHotkeySearchboxPlugin::slotSelectResult1() {
+    selectResult(1);
+}
+
+void GlobalHotkeySearchboxPlugin::slotSelectResult2() {
+    selectResult(2);
+}
+
+void GlobalHotkeySearchboxPlugin::slotSelectResult3() {
+    selectResult(3);
+}
+
+void GlobalHotkeySearchboxPlugin::slotSelectResult4() {
+    selectResult(4);
+}
+
+void GlobalHotkeySearchboxPlugin::slotSelectResult5() {
+    selectResult(5);
+}
+
+void GlobalHotkeySearchboxPlugin::slotSelectResult6() {
+    selectResult(6);
+}
+
+void GlobalHotkeySearchboxPlugin::slotSelectResult7() {
+    selectResult(7);
 }
 
 #include "globalsearchhotkeyplugin.moc"
