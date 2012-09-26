@@ -18,16 +18,23 @@
 #include <kopete/kopetemetacontact.h>
 #include <kopete/kopetecontact.h>
 
+
+#include "selectnthcontactaction.h"
 #include "globalsearchhotkeyplugin.h"
 
 K_PLUGIN_FACTORY( GlobalHotkeySearchboxPluginFactory, registerPlugin<GlobalHotkeySearchboxPlugin>(); )
 K_EXPORT_PLUGIN( GlobalHotkeySearchboxPluginFactory( "kopete_globalhotkeysearchbox" ) )
+
+namespace {
+    static GlobalHotkeySearchboxPlugin* g_instance = 0;
+}
 
 GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, const QVariantList& /* args */ )
         : Kopete::Plugin ( GlobalHotkeySearchboxPluginFactory::componentData(), parent )
         , m_actionShowMainWindowAndSelectSearchBox(0)
         , m_searchBoxEdit(0)
 {
+    g_instance = this;
 
     m_mainWindow = qobject_cast<KXmlGuiWindow*>( Kopete::UI::Global::mainWidget() );
 
@@ -48,9 +55,14 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
     connect( m_searchBoxEdit, SIGNAL(returnPressed()), this, SLOT(slotSearchReturnPressed()) );
 
 
+    for(int i = 1; i <= 9; ++i) {
+        SelectNthContactAction *a = new SelectNthContactAction(i);
+        m_mainWindow->actionCollection()->addAction("OpenChatWithContact" + QString::number(i), a );
+
+    }
+/*
     m_selectResult2 = new KAction( i18n ( "Open chat with contact #2" ), this );
 
-    m_mainWindow->actionCollection()->addAction("OpenChatWithContact2", m_selectResult2 );
 
     m_selectResult2->setEnabled(true);
     m_selectResult2->setShortcutConfigurable(true);
@@ -92,7 +104,7 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
     m_selectResult5->setShortcut( KShortcut(Qt::Key_5 + Qt::ALT) );
     connect(m_selectResult5, SIGNAL(triggered()), this, SLOT(slotSelectResult5()));
     m_selectResult5->setWhatsThis ( i18n ( "Open chat with contact #5" ) );
-
+*/
 }
 
 GlobalHotkeySearchboxPlugin::~GlobalHotkeySearchboxPlugin()
@@ -101,6 +113,11 @@ GlobalHotkeySearchboxPlugin::~GlobalHotkeySearchboxPlugin()
         delete m_actionShowMainWindowAndSelectSearchBox;
         m_actionShowMainWindowAndSelectSearchBox = 0;
     }
+    g_instance = 0;
+}
+
+GlobalHotkeySearchboxPlugin *GlobalHotkeySearchboxPlugin::self() {
+    return g_instance;
 }
 
 void GlobalHotkeySearchboxPlugin::slotTrigged() {

@@ -23,8 +23,12 @@ endif(Kopete_FOUND)
 include_directories(${KDE4_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 
 
-set(kopete_globalsearchhotkey_PART_SRCS
-   globalsearchhotkeyplugin.cpp )
+set(
+    kopete_globalsearchhotkey_PART_SRCS
+
+    globalsearchhotkeyplugin.cpp
+    selectnthcontactaction.cpp
+)
 
 kde4_add_plugin(kopete_globalsearchhotkey ${kopete_globalsearchhotkey_PART_SRCS})
 
