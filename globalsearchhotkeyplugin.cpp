@@ -9,6 +9,8 @@
 #include <ktoolbar.h>
 #include <kfilterproxysearchline.h>
 #include <klineedit.h>
+#include <KConfig>
+#include <KConfigGroup>
 
 // Kopete
 #include <kopeteuiglobal.h>
@@ -33,6 +35,8 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
         : Kopete::Plugin ( GlobalHotkeySearchboxPluginFactory::componentData(), parent )
         , m_actionShowMainWindowAndSelectSearchBox(0)
         , m_searchBoxEdit(0)
+        , m_config(0)
+        , m_configActionHotkeys(0)
 {
     g_instance = this;
 
@@ -45,7 +49,7 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
     m_actionShowMainWindowAndSelectSearchBox->setGlobalShortcut ( KShortcut ( ) );
     m_actionShowMainWindowAndSelectSearchBox->setWhatsThis ( i18n ( "Show contact list and select search box" ) );
 
-    connect ( m_actionShowMainWindowAndSelectSearchBox, SIGNAL (triggered(bool)), this, SLOT (slotTrigged()) );
+    connect ( m_actionShowMainWindowAndSelectSearchBox, SIGNAL (triggered(bool)), this, SLOT (slotSearchLineReturnPressed()) );
 
     connect ( this, SIGNAL (readyForUnload()), this, SLOT (readyForUnload()) );
 
@@ -55,26 +59,58 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
     connect( m_searchBoxEdit, SIGNAL(returnPressed()), this, SLOT(slotSearchReturnPressed()) );
 
 
+    m_config = new KConfig(GlobalHotkeySearchboxPluginFactory::componentData());
+    m_configActionHotkeys = new KConfigGroup(m_config, "select_actions");
+
     for(int i = 1; i <= 9; ++i) {
+
+        const QString currentActionName = getActionName(i);
+
         SelectNthContactAction *a = new SelectNthContactAction(i);
-        m_mainWindow->actionCollection()->addAction("OpenChatWithContact" + QString::number(i), a );
+        m_mainWindow->actionCollection()->addAction( currentActionName, a );
+        m_selectActions.append(a);
+
+        if (m_configActionHotkeys->hasKey(getActionName(i))) {
+            a->setShortcutFromConfig( KShortcut( m_configActionHotkeys->readEntry(currentActionName) ) );
+        }
+
     }
+
 }
 
 GlobalHotkeySearchboxPlugin::~GlobalHotkeySearchboxPlugin()
 {
+
+    foreach(SelectNthContactAction *a, m_selectActions) {
+        delete a;
+    }
+    m_selectActions.clear();
+
+    g_instance = 0;
+
     if (m_actionShowMainWindowAndSelectSearchBox) {
         delete m_actionShowMainWindowAndSelectSearchBox;
         m_actionShowMainWindowAndSelectSearchBox = 0;
     }
-    g_instance = 0;
+
+
+    if (m_configActionHotkeys) {
+        delete m_configActionHotkeys;
+        m_configActionHotkeys = 0;
+    }
+
+    if (m_config) {
+        delete m_config;
+        m_config = 0;
+    }
+
 }
 
 GlobalHotkeySearchboxPlugin *GlobalHotkeySearchboxPlugin::self() {
     return g_instance;
 }
 
-void GlobalHotkeySearchboxPlugin::slotTrigged() {
+void GlobalHotkeySearchboxPlugin::slotSearchLineReturnPressed() {
     // raise main window
     m_mainWindow->show();
     m_mainWindow->raise();
@@ -85,6 +121,19 @@ void GlobalHotkeySearchboxPlugin::slotTrigged() {
     KLineEdit *lineEdit = m_mainWindow->toolBar("quickSearchBar")->findChild<KLineEdit*>();
     lineEdit->setFocus();
     lineEdit->selectAll();
+}
+
+void GlobalHotkeySearchboxPlugin::updateActionShortcutInConfig(int n) {
+    const QString itemName = getActionName(n);
+
+    kDebug() << itemName << m_selectActions[n - 1]->shortcut(KAction::ActiveShortcut).toString();
+
+    m_configActionHotkeys->writeEntry( itemName, m_selectActions[n - 1]->shortcut(KAction::ActiveShortcut).toString() );
+    m_configActionHotkeys->config()->sync();
+}
+
+QString GlobalHotkeySearchboxPlugin::getActionName(int n) {
+    return "OpenChatWithContact" + QString::number(n);
 }
 
 void GlobalHotkeySearchboxPlugin::readyForUnload()

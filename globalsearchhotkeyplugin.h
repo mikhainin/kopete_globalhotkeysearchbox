@@ -5,6 +5,9 @@
 class KAction;
 class KXmlGuiWindow;
 class KLineEdit;
+class KConfig;
+class KConfigGroup;
+class SelectNthContactAction;
 
 class GlobalHotkeySearchboxPlugin : public Kopete::Plugin {
     Q_OBJECT
@@ -15,17 +18,24 @@ public:
     static GlobalHotkeySearchboxPlugin* self();
 
     void selectResult(int n);
+    void updateActionShortcutInConfig(int n);
+    QString getActionName(int n);
+
+
+
 
 protected slots:
     void readyForUnload();
-    void slotTrigged();
+    void slotSearchLineReturnPressed();
     void slotSearchReturnPressed();
 
 private:
     KAction *m_actionShowMainWindowAndSelectSearchBox;
+    QList<SelectNthContactAction*> m_selectActions;
 
     KXmlGuiWindow *m_mainWindow;
     KLineEdit *m_searchBoxEdit;
-
+    KConfig* m_config;
+    KConfigGroup *m_configActionHotkeys;
 private:
 };
