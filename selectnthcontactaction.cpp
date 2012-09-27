@@ -10,7 +10,7 @@ SelectNthContactAction::SelectNthContactAction(int n)
 {
     setText( i18n( "Open chat with contact #%1", n ) );
     setWhatsThis( i18n( "Open chat with contact #%d", n ) );
-    setShortcut( KShortcut(Qt::ALT + (Qt::Key_0 + n)), DefaultShortcut );
+    setShortcut( KShortcut(Qt::ALT + (Qt::Key_0 + n)), DefaultShortcut | ActiveShortcut );
     connect( this, SIGNAL(triggered()), SLOT(slotTriggered()) );
 }
 

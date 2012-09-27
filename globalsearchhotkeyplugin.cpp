@@ -58,7 +58,6 @@ GlobalHotkeySearchboxPlugin::GlobalHotkeySearchboxPlugin ( QObject* parent, cons
     for(int i = 1; i <= 9; ++i) {
         SelectNthContactAction *a = new SelectNthContactAction(i);
         m_mainWindow->actionCollection()->addAction("OpenChatWithContact" + QString::number(i), a );
-
     }
 }
 
